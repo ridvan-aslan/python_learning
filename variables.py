@@ -1,18 +1,18 @@
-# maasAli = 5000
-# maasVeli = 6000
+# maas_ali = 5000
+# maas_veli = 6000
 
 # vergi = 0.27
 
-# print("Ali'nin maaşı:", maasAli - (maasAli * vergi))
-# print("Veli'nin maaşı:", maasVeli - (maasVeli * vergi))
+# print("Ali'nin maaşı:", maas_ali - (maas_ali * vergi))
+# print("Veli'nin maaşı:", maas_veli - (maas_veli * vergi))
 
-firstName = "Rıdvan"
-lastName = "Aslan"
-print(firstName + " " + lastName)
+first_name = "Rıdvan"
+last_name = "Aslan"
+print(first_name + " " + last_name)
 
-x, y, name, isTrue = 5, 10, "Rıdvan", True
+x, y, name, is_true = 5, 10, "Rıdvan", True
 
 print("x:", x)
 print("y:", y)
 print("Name:", name)
-print("Is True:", isTrue)
+print("Is True:", is_true)
