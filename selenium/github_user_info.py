@@ -3,5 +3,5 @@ import os
 
 load_dotenv()
 
-username = os.getenv("username")
-password = os.getenv("password")
+username = os.getenv("USERNAME")
+password = os.getenv("PASSWORD")
