@@ -3,11 +3,14 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 import time
 
 class Instagram:
     def __init__(self, username, password):
-        self.browser = webdriver.Chrome()
+        self.browser_profile = webdriver.ChromeOptions()
+        self.browser_profile.add_experimental_option('prefs', {'intl.accept_languages': 'en,en_US'})
+        self.browser = webdriver.Chrome(options=self.browser_profile)
         self.username = username
         self.password = password
         self.wait = WebDriverWait(self.browser, 10)
@@ -18,7 +21,7 @@ class Instagram:
         self.browser.find_element(By.XPATH,'//*[@id="loginForm"]/div[1]/div[1]/div/label/input').send_keys(self.username)
         self.browser.find_element(By.XPATH,'//*[@id="loginForm"]/div[1]/div[2]/div/label/input').send_keys(self.password)
         self.browser.find_element(By.XPATH,'//*[@id="loginForm"]/div[1]/div[3]/button').click()
-        time.sleep(5)
+        time.sleep(10)
 
 
     def get_followers(self):
@@ -56,7 +59,52 @@ class Instagram:
             print(i.text)
 
         self.browser.quit()
+
+    def follow_user(self, username):
+
+        self.browser.get(f"https://www.instagram.com/{username}")
+        time.sleep(2)
+
+        try:
+            follow_btn = self.wait.until(
+                EC.element_to_be_clickable((By.XPATH, "//button//div[text()='Follow']"))
+            )
+            follow_btn.click()
+            
+            time.sleep(5)
+
+            print("User is followed")
+
+        except TimeoutException:
+            print("User is already followed")
         
+    def unfollow_user(self, username):
+
+        self.browser.get(f"https://www.instagram.com/{username}")
+        time.sleep(2)
+
+        try:
+            unfollow = self.wait.until(
+                EC.element_to_be_clickable((By.XPATH, "//button//div[text()='Following']"))
+            )
+            unfollow.click()
+
+            unfollow_btn = self.wait.until(
+                EC.element_to_be_clickable((By.XPATH, "//span[text()='Unfollow']"))
+            )
+            unfollow_btn.click()
+            
+            time.sleep(5)
+
+            print("User is unfollowed")
+
+        except TimeoutException:
+            print("User is not followed")
+
 instagram = Instagram(instagram_username, instagram_password)
 instagram.login()
-instagram.get_followers()
+
+# users = ["ridvanaslan.dev"]
+
+# for user in users:
+#     instagram.follow_user(user)
