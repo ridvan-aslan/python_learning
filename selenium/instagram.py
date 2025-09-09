@@ -55,10 +55,9 @@ class Instagram:
         
         followers = scrollable_div.find_elements(By.XPATH, "//span[contains(@class, 'xjp7ctv')]//span[@dir='auto']")
 
-        for i in followers:
-            print(i.text)
+        print(f"Your number of followers: {len(followers)}")
 
-        self.browser.quit()
+        return followers
 
     def follow_user(self, username):
 
@@ -101,8 +100,23 @@ class Instagram:
         except TimeoutException:
             print("User is not followed")
 
+    def print_followers(self):
+        get_followers = self.get_followers()
+
+        try:
+            with open("selenium/followers.txt", "w+", encoding="utf-8") as file:
+                for follower in get_followers:
+                    file.write(follower.text + "\n")
+
+                file.seek(0)
+                print(file.read())
+
+        except Exception as e:
+            print(e)
+        
 instagram = Instagram(instagram_username, instagram_password)
 instagram.login()
+instagram.print_followers()
 
 # users = ["ridvanaslan.dev"]
 
