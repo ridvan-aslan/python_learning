@@ -43,7 +43,35 @@ class Student:
             Student.cursor.close()
             Student.connection.close()
             print("Database connection closed.")
+
+    @staticmethod
+    def student_info():
+        # sql = "SELECT * FROM students"
+        # sql = "SELECT student_number, name, surname FROM students"
+        # sql = "SELECT student_number, name, surname FROM students where gender = 'F'"
+        # sql = "SELECT student_number, name, surname FROM students where YEAR(birthdate) = 2003"
+        # sql = "SELECT student_number, name, surname FROM students where name = 'Ayşe' and YEAR(birthdate) = 2004"
+        # sql = "SELECT student_number, name, surname FROM students where name LIKE '%an%'"
+        sql = "SELECT COUNT(student_id) FROM students where GENDER = 'm'"
+        # sql = "SELECT student_number, name, surname FROM students WHERE gender = 'F' ORDER BY name"
+
+        try:
+            Student.cursor.execute(sql)
+
+            # result = Student.cursor.fetchone()
+            # print(f"Number of male students: {result[0]}")
+
+            result = Student.cursor.fetchall()
+            for row in result:
+                print(f"Student Number: {row[0]}, Name: {row[1]}, Surname: {row[2]}")
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+        finally:
+            Student.cursor.close()
+            Student.connection.close()
+
             
+Student.student_info()
 
 # student = Student("109", "Ayşe", "Demir", datetime(2002, 3, 15), "F")
 # student.save_to_database()
@@ -57,7 +85,7 @@ students = [
     ("206", "Fatma", "Tekin", datetime(2004, 7, 5), "F")
 ]
 
-Student.save_all_students(students)
+# Student.save_all_students(students)
 
 # cursor = connection.cursor()
 
