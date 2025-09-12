@@ -13,7 +13,12 @@ class Student:
         self.birthdate = birthdate
         self.gender = gender
 
+    # -----------------------------
+    # INSERT METHODS
+    # -----------------------------
+
     def save_to_database(self):
+        """Tek bir öğrenciyi veritabanına ekler."""
         sql = "INSERT INTO students (student_number, name, surname, birthdate, gender) VALUES (%s, %s, %s, %s, %s)"
         values = (self.student_number, self.name, self.surname, self.birthdate, self.gender)
         try:
@@ -22,56 +27,84 @@ class Student:
             print(f"{self.name} {self.surname} added to database.")
         except mysql.connector.Error as err:
             print(f"Error: {err}")
-        finally:
-            print("Operation finished.")
-            Student.cursor.close()
-            Student.connection.close()
-            print("Database connection closed.")
 
     @staticmethod
     def save_all_students(students):
+        """Birden fazla öğrenciyi liste olarak ekler."""
         sql = "INSERT INTO students (student_number, name, surname, birthdate, gender) VALUES (%s, %s, %s, %s, %s)"
-        values = (students)
         try:
-            Student.cursor.executemany(sql, values)
+            Student.cursor.executemany(sql, students)
             Student.connection.commit()
             print(f"{Student.cursor.rowcount} students added to database.")
         except mysql.connector.Error as err:
             print(f"Error: {err}")
-        finally:
-            print("Operation finished.")
-            Student.cursor.close()
-            Student.connection.close()
-            print("Database connection closed.")
+
+    # -----------------------------
+    # SELECT METHODS
+    # -----------------------------
 
     @staticmethod
     def student_info():
+        """Tüm öğrencilerden bilgi getirir (örnek sorgular içeriyor)."""
         # sql = "SELECT * FROM students"
-        # sql = "SELECT student_number, name, surname FROM students"
-        # sql = "SELECT student_number, name, surname FROM students where gender = 'F'"
-        # sql = "SELECT student_number, name, surname FROM students where YEAR(birthdate) = 2003"
-        # sql = "SELECT student_number, name, surname FROM students where name = 'Ayşe' and YEAR(birthdate) = 2004"
-        # sql = "SELECT student_number, name, surname FROM students where name LIKE '%an%'"
-        sql = "SELECT COUNT(student_id) FROM students where GENDER = 'm'"
-        # sql = "SELECT student_number, name, surname FROM students WHERE gender = 'F' ORDER BY name"
+        # sql = "SELECT student_number, name, surname FROM students WHERE gender = 'F'"
+        # sql = "SELECT student_number, name, surname FROM students WHERE YEAR(birthdate) = 2003"
+        # sql = "SELECT student_number, name, surname FROM students WHERE name LIKE '%an%'"
+        sql = "SELECT COUNT(student_id) FROM students WHERE gender = 'M'"  # örnek: erkek öğrencilerin sayısı
 
         try:
             Student.cursor.execute(sql)
-
-            # result = Student.cursor.fetchone()
-            # print(f"Number of male students: {result[0]}")
-
-            result = Student.cursor.fetchall()
-            for row in result:
-                print(f"Student Number: {row[0]}, Name: {row[1]}, Surname: {row[2]}")
+            result = Student.cursor.fetchone()
+            print(f"Result: {result[0]}")
         except mysql.connector.Error as err:
             print(f"Error: {err}")
-        finally:
+
+    # -----------------------------
+    # UPDATE METHODS
+    # -----------------------------
+
+    @staticmethod
+    def update_student(id, name, surname):
+        """ID'ye göre bir öğrencinin adı ve soyadını günceller."""
+        sql = "UPDATE students SET name = %s, surname = %s WHERE student_id = %s"
+        values = (name, surname, id)
+        try:
+            Student.cursor.execute(sql, values)
+            Student.connection.commit()
+            print(f"{Student.cursor.rowcount} record updated.")
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+
+    @staticmethod
+    def update_student_by_gender(gender):
+        """Cinsiyete göre öğrencilerin adının başına 'Mr' ekler."""
+        sql = "UPDATE students SET name = CONCAT('Mr ', name) WHERE gender = %s"
+        values = (gender,)
+        try:
+            Student.cursor.execute(sql, values)
+            Student.connection.commit()
+            print(f"{Student.cursor.rowcount} record updated.")
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+
+    # -----------------------------
+    # CLEANUP METHODS
+    # -----------------------------
+
+    @staticmethod
+    def close_connection():
+        """Cursor ve connection'ı kapatır."""
+        try:
             Student.cursor.close()
             Student.connection.close()
+            print("Database connection closed.")
+        except:
+            pass
 
-            
-Student.student_info()
+
+# -----------------------------
+# USİNG EXAMPLES
+# -----------------------------
 
 # student = Student("109", "Ayşe", "Demir", datetime(2002, 3, 15), "F")
 # student.save_to_database()
@@ -87,31 +120,10 @@ students = [
 
 # Student.save_all_students(students)
 
-# cursor = connection.cursor()
+# Student.update_student(2, "Ahmet", "Can")
 
-# students = [
-#     ("101", "Rıdvan", "Aslan", datetime(2003, 7, 5), "M"),
-#     ("102", "Ayşe", "Yılmaz", datetime(2004, 1, 15), "F"),
-#     ("103", "Mehmet", "Demir", datetime(2002, 11, 20), "M"),
-#     ("104", "Zeynep", "Can", datetime(2005, 3, 10), "F"),
-#     ("105", "Ali", "Kara", datetime(2003, 9, 25), "M"),
-#     ("106", "Elif", "Tekin", datetime(2004, 6, 30), "F")
-# ]
+Student.update_student_by_gender("M")
 
-# def insert_students(students):
-#     sql = "INSERT INTO students (student_number, name, surname, birthdate, gender) VALUES (%s, %s, %s, %s, %s)"
-#     value = (students)
+# Student.student_info()
 
-#     try:
-#         cursor.executemany(sql, value)
-#         connection.commit()
-#         print(cursor.rowcount, "record inserted.")
-#     except mysql.connector.Error as err:
-#         print(f"Error: {err}")
-#     finally:
-#         cursor.close()
-#         connection.close()
-#         print("Database connection closed.")
-
-# insert_students(students)
-# print("Data sent to the database.")
+Student.close_connection()
