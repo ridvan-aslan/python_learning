@@ -57,6 +57,20 @@ class DbManager:
             print(f"Error: {e}")
             self.connection.rollback()
 
+    def delete_student(self, student_id):
+        query = "DELETE FROM student WHERE id = %s"
+        try:
+            self.cursor.execute(query, (student_id,))
+            self.connection.commit()
+            if self.cursor.rowcount > 0:
+                print(f"{self.cursor.rowcount} student deleted.")
+            else:
+                print("No student found with the given ID.")
+        except Exception as e:
+            print(f"Error deleting student: {e}")
+            self.connection.rollback()
+
+
     def add_teacher(self, teacher: Teacher):
         pass
 
@@ -68,19 +82,4 @@ class DbManager:
         print("Database connection closed.")
 
 
-db = DbManager()
 
-# student = db.get_students_by_class_id(1)
-
-# for s in student:
-#     print(f"Name: {s.name}, Surname: {s.surname}, Birthdate: {s.birthdate}")
-
-# db.add_student(Student("607", "Zeynep", "Demir", datetime(2004, 11, 22), "F", 3))
-
-student = db.get_student_by_id(6)
-
-student[0].name = "Yeliz"
-
-db.edit_student(student[0])
-
-db.close()
