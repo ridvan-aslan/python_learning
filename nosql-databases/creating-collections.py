@@ -20,7 +20,7 @@ mycollection = mydb["products"]
 # print(result.inserted_id)
 
 products = [
-    {"name": "`Samsung S8", "price": 3000, "description": "good phone"},
+    {"name": "Samsung S8", "price": 3000, "description": "good phone"},
     {"name": "Samsung S7", "price": 2000, "categories": ['phone', 'tablet']},
 ]
 
