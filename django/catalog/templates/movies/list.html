@@ -1,6 +1,7 @@
 {%extends 'layout.html' %}
 
 {% load static %}
+{% load humanize %}
 
 {%block content%}
 
@@ -13,47 +14,32 @@
         </div>
     </div>
 
-    <div class="card mb-3 mt-3">
-            <div class="row g-0">
-                <div class="col-md-4">
-                    <img src="https://picsum.photos/500/300" class="img-fluid rounded-start" alt="...">
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero ad qui reprehenderit eos officia corporis ut omnis, eius suscipit fuga provident magni vitae exercitationem rerum.</p>
-                        <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+    {% if movies %}
+        {% for movie in movies %}
+
+            <div class="card mb-3 mt-3">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="{{movie.image}}" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">{{movie.title}}</h5>
+                            <p class="card-text">{{movie.description}}</p>
+                            <p class="card-text"><small class="text-body-secondary">{{movie.created_date | naturaltime}}</small></p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="card mb-3">
-            <div class="row g-0">
-                <div class="col-md-4">
-                    <img src="https://picsum.photos/500/300" alt="food" class="img-fluid rounded-start">
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero ad qui reprehenderit eos officia corporis ut omnis, eius suscipit fuga provident magni vitae exercitationem rerum.</p>
-                        <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-3">
-            <div class="row g-0">
-                <div class="col-md-4">
-                    <img src="https://picsum.photos/500/300" class="img-fluid rounded-start" alt="...">
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero ad qui reprehenderit eos officia corporis ut omnis, eius suscipit fuga provident magni vitae exercitationem rerum.</p>
-                        <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+    <div class="alert alert-warning" role="alert">
+        <p>No movies found.</p>
+    </div>
+
+    {% endif %}
 
 {%endblock%}
