@@ -2,3 +2,4 @@
 __pycache__
 chinook.db
 settings.py
+db.sqlite3
