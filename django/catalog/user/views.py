@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib import auth
+from django.contrib import messages
+
 
 
 # Create your views here.
@@ -14,10 +16,10 @@ def login(request):
 
         if user is not None:
             auth.login(request, user)
-            print('Login successful')
+            messages.success(request, 'You are logged in')
             return redirect('movies')
         else:
-            print('Invalid credentials')
+            messages.error(request, 'Invalid username or password')
             return redirect('login')
     else:    
         return render(request, 'user/login.html')
@@ -31,19 +33,19 @@ def register(request):
 
         if password == confirm_password:
             if User.objects.filter(username=username).exists():
-                print('Username already exists')
+                messages.warning(request, 'Username already exists')
                 return redirect('register')
             
             elif User.objects.filter(email=email).exists():
-                print('Email already exists')
+                messages.warning(request, 'Email already exists')
                 return redirect('register')
             else:
                 user = User.objects.create_user(username=username, email=email, password=password)
                 user.save()
-                print('User created')
+                messages.success(request, 'User created successfully')
                 return redirect('login')
         else:
-            print('Passwords do not match')
+            messages.error(request, 'Passwords do not match')
             return redirect('register')
     else:
         return render(request, 'user/register.html')
