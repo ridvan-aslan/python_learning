@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, logout
 from django.contrib import auth
 from django.contrib import messages
 
@@ -50,5 +50,7 @@ def register(request):
     else:
         return render(request, 'user/register.html')
 
-def logout(request):
-    return render(request, 'user/logout.html')
+def user_logout(request):
+    logout(request)  
+    messages.success(request, 'You are logged out')
+    return redirect('login')
