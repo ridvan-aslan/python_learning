@@ -1,10 +1,26 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from django.contrib import auth
+
 
 # Create your views here.
 
 def login(request):
-    return render(request, 'user/login.html')
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            auth.login(request, user)
+            print('Login successful')
+            return redirect('movies')
+        else:
+            print('Invalid credentials')
+            return redirect('login')
+    else:    
+        return render(request, 'user/login.html')
 
 def register(request):
     if request.method == 'POST':
